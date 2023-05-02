@@ -1,5 +1,6 @@
-streamlit
-oauth2client
-gspread
-pandas
-numpy
+streamlit == 1.22.0 
+qrcode == 7.4.2
+oauth2client == 4.1.3
+gspread == 5.8.0
+pandas == 1.5.3
+numpy == 1.24.3
