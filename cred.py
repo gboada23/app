@@ -5,7 +5,7 @@ import os
 import streamlit as st
 import numpy as np
 
-creds_path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+creds_path = r"Credenciales/cred.json"
 st.set_page_config(
     page_title="INCIDENCIAS | NOMINA ",
     page_icon="💵",
