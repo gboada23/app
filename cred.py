@@ -1,7 +1,6 @@
 import gspread
 import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
-import os
 import streamlit as st
 import numpy as np
 
@@ -20,8 +19,12 @@ dfs = []
 primer = gc.open("EVALUACIONES COLECTIVAS").worksheet("ASIS_OP").get_values("C:K")
 headers = primer.pop(0)
 df = pd.DataFrame(primer, columns=headers)
-
 df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+second = gc.open("EVALUACIONES COLECTIVAS").worksheet("DATOS").get_values("D:F")
+headers3 = second.pop(0)
+datos = pd.DataFrame(second, columns=headers3)
+datos = datos[datos["STATUS"] =="ACTIVO"].sort_values("OPERARIO", ascending=True)
+datos["CEDULA"] = datos["CEDULA"].astype(str)
 
 dfs.append(df)
 for sheet in sheets:
@@ -53,8 +56,8 @@ INCIDENCIAS.loc[INCIDENCIAS['Asistencia'] == 'Inasistente', 'VER'] = ' '
 INCIDENCIAS_SUP = dfs[1][dfs[1]["ASISTENCIA"]!="Asistencia"]
 @st.cache_data()
 def nomina(inicio, final): 
-    inicio = pd.to_datetime(inicio).strftime('%d/%m/%Y')
-    final = pd.to_datetime(final).strftime('%d/%m/%Y')
+    inicio = pd.to_datetime(inicio)
+    final = pd.to_datetime(final)
     incidencias = INCIDENCIAS[(INCIDENCIAS["Date"]  >= inicio) & (INCIDENCIAS["Date"]  <= final)] 
     incidencias_sup = INCIDENCIAS_SUP[(INCIDENCIAS_SUP["FECHA"] >=inicio) & (INCIDENCIAS_SUP["FECHA"] <=final)]
     fin_operarios = FIN_OP[(FIN_OP["FECHA"] >=inicio) & (FIN_OP["FECHA"] <=final)]
@@ -84,12 +87,14 @@ def main():
 
         # Creamos un objeto de Pandas ExcelWriter para guardar los 6 dataframes en un mismo archivo de Excel
     with pd.ExcelWriter('Nomina.xlsx') as writer:
+        datos.to_excel(writer, sheet_name="BD Operarios", index=False)
         incidencias.to_excel(writer, sheet_name='Incidencias',index=False)
         incidencias_sup.to_excel(writer, sheet_name='Incidencias Supervisores',index=False)
         fin_operarios.to_excel(writer, sheet_name='Fin de Semana Operarios',index=False)
         fin_supervisores.to_excel(writer, sheet_name='Fin de semana Supervisores',index=False)
         especiales_operario.to_excel(writer, sheet_name='Especiales Operarios',index=False)
         especiales_supervisores.to_excel(writer, sheet_name='Especiales Supervisores',index=False)
+
     
            
         # Ejecutamos la función de nómina con las fechas ingresadas desde streamlit
