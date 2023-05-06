@@ -92,7 +92,7 @@ def enviar_email(inicio, final, archivo_adjunto):
 
 
     asunto = f"Incidencias Capitales del {inicio} al {final}"
-    cuerpo = f"""{saludo} reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta{final} donde podran visualizar:
+    cuerpo = f"""{saludo} reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta el {final} donde podran visualizar:
 
             - Incidencias de lunes a viernes Operarios y Supervisores
             - Incidencias de Fines de semanas de Operarios y supervisores
