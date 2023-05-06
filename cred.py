@@ -3,6 +3,11 @@ import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
 import streamlit as st
 import numpy as np
+from email.message import EmailMessage
+from datetime import datetime
+import ssl
+import smtplib
+import cred2
 
 creds_path = r"Credenciales/cred.json"
 st.set_page_config(
@@ -26,6 +31,7 @@ datos = pd.DataFrame(second, columns=headers3)
 datos = datos[datos["STATUS"] =="ACTIVO"].sort_values("OPERARIO", ascending=True)
 datos["CEDULA"] = datos["CEDULA"].astype(str)
 
+
 dfs.append(df)
 for sheet in sheets:
     data = gc.open("EVALUACIONES COLECTIVAS").worksheet(sheet).get_values("B:E")
@@ -34,8 +40,7 @@ for sheet in sheets:
     ## convertir a datetime las columnas de cada DF
     df['FECHA'] = pd.to_datetime(df['FECHA'], format='%d/%m/%Y')
    
-
-        
+       
     dfs.append(df)
 
 # SACAMOS CADA DF DE LA POSICION QUE SE ENCUENTRA EN LA LISTA
@@ -74,6 +79,45 @@ def nomina(inicio, final):
     return incidencias, incidencias_sup, fin_operarios, fin_supervisores, especiales_operario, especiales_supervisores
 # Definimos la aplicación de Streamlit
 
+def enviar_email(inicio, final, archivo_adjunto):
+    hora_actual = datetime.now().time()
+    if hora_actual.hour < 12:
+        saludo = "Buenos Dias"
+    else:
+        saludo = "Buenas Tardes"
+
+    emisor = "gustavoserviplus@gmail.com"
+    clave = cred2.clave
+    receptores = ["gustavoserviplus@gmail.com","multiserviplus2022ca@gmail.com","serviplusrrhh@gmail.com","aliserviplus@gmail.com"]
+
+
+    asunto = f"Incidencias Capitales del {inicio} al {final}"
+    cuerpo = f"""{saludo} reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta{final} donde podran visualizar:
+
+            - Incidencias de lunes a viernes Operarios y Supervisores
+            - Incidencias de Fines de semanas de Operarios y supervisores
+            - Incidencias de Cuadrillas especiales de Operarios y supervisores en caso que haya alguna cuadrilla en la fecha corte
+
+                
+Este es un correo automatizado por Gustavo Boada del departamento de Datos."""
+    em = EmailMessage()
+
+    em["From"] = emisor
+    em["To"] = ", ".join(receptores)
+    em["Subject"] = asunto
+    em.set_content(cuerpo)
+
+    with open(archivo_adjunto, "rb") as f:
+        archivo = f.read()
+        em.add_attachment(archivo, maintype="application", subtype="octet-stream", filename=archivo_adjunto)
+
+    contexto = ssl.create_default_context()
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto) as smtp:
+        smtp.login(emisor, clave)
+        smtp.sendmail(emisor, receptores, em.as_string())
+    return st.success("El correo ha sido enviado con éxito.")
+
 def main():
     st.title("Sistema de incidencias Multiservicios Serviplus")
     st.write("#")
@@ -94,9 +138,7 @@ def main():
         fin_supervisores.to_excel(writer, sheet_name='Fin de semana Supervisores',index=False)
         especiales_operario.to_excel(writer, sheet_name='Especiales Operarios',index=False)
         especiales_supervisores.to_excel(writer, sheet_name='Especiales Supervisores',index=False)
-
-    
-           
+        
         # Ejecutamos la función de nómina con las fechas ingresadas desde streamlit
     incidencias, incidencias_sup, fin_operarios, fin_supervisores, especiales_operario, especiales_supervisores = nomina(inicio, final)
         
@@ -126,12 +168,22 @@ def main():
         st.dataframe(especiales_supervisores)
     col1, col2, col3 = st.columns((3,3,3))
     with col2:
-        st.warning(f"Para descargar las incidencias del {inicio} hasta el {final} presiona el boton")
+        inicio = inicio.strftime("%d/%m/%Y")
+        final = final.strftime("%d/%m/%Y")
+        st.warning(f"Puedes descargar las incidencias del {inicio} hasta el {final} o enviarlas por correo al departamento encargado")
         with open('Nomina.xlsx', 'rb') as f:  
-         bytes_data = f.read()
-        col1, col2, col3 = st.columns(3)
-        col2.download_button(label="Descargar Todo", data=bytes_data, file_name=f'Incidencias del {inicio} al {final}.xlsx', mime='application/vnd.ms-excel')     
-    # Muestra un mensaje de éxito al usuario
+            bytes_data = f.read()
+        
+        sub1, sub2, sub3 = st.columns((4,2.2,4))
+        with sub1:
+            descarga = st.download_button(label="Descargar Todo", data=bytes_data, file_name=f'Incidencias del {inicio} al {final}.xlsx', mime='application/vnd.ms-excel')                 
+            if descarga:
+               st.success("Archivo descargado")
+        with sub2:    
+            st.markdown("Ó")
+        with sub3:
+            if st.button("Enviar por correo"):
+                 enviar_email(inicio, final,"Nomina.xlsx")
     
 # Ejecuta la aplicación de Streamlit
 if __name__ == '__main__':
