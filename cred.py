@@ -27,10 +27,9 @@ df = pd.DataFrame(primer, columns=headers)
 df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
 second = gc.open("EVALUACIONES COLECTIVAS").worksheet("DATOS").get_values("D:F")
 headers3 = second.pop(0)
-datos = pd.DataFrame(second, columns=headers3)
-datos = datos[datos["STATUS"] =="ACTIVO"].sort_values("OPERARIO", ascending=True)
-datos["CEDULA"] = datos["CEDULA"].astype(str)
-
+datos1 = pd.DataFrame(second, columns=headers3)
+datos = datos1[datos1["STATUS"] =="ACTIVO"].sort_values("OPERARIO", ascending=True)
+datos2 = datos1[datos1["STATUS"] =="VACACIONES"].sort_values("OPERARIO", ascending=True)
 
 dfs.append(df)
 for sheet in sheets:
@@ -94,6 +93,8 @@ def enviar_email(inicio, final, archivo_adjunto):
     asunto = f"Incidencias Capitales del {inicio} al {final}"
     cuerpo = f"""{saludo} reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta el {final} donde podran visualizar:
 
+            - Base de Datos Actualizada al dia de la recepcion de este correo
+            - Base de datos de los Operararios actualmente de vacaciones
             - Incidencias de lunes a viernes Operarios y Supervisores
             - Incidencias de Fines de semanas de Operarios y supervisores
             - Incidencias de Cuadrillas especiales de Operarios y supervisores en caso que haya alguna cuadrilla en la fecha corte
@@ -132,6 +133,7 @@ def main():
         # Creamos un objeto de Pandas ExcelWriter para guardar los 6 dataframes en un mismo archivo de Excel
     with pd.ExcelWriter('Nomina.xlsx') as writer:
         datos.to_excel(writer, sheet_name="BD Operarios", index=False)
+        datos2.to_excel(writer, sheet_name="De vacaciones", index=False)
         incidencias.to_excel(writer, sheet_name='Incidencias',index=False)
         incidencias_sup.to_excel(writer, sheet_name='Incidencias Supervisores',index=False)
         fin_operarios.to_excel(writer, sheet_name='Fin de Semana Operarios',index=False)
