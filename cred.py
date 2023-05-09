@@ -129,10 +129,12 @@ def main():
     
         # Ejecutamos la función de nomina con las fechas ingresadas
     incidencias, incidencias_sup, fin_operarios, fin_supervisores, especiales_operario, especiales_supervisores = nomina(inicio, final)
-
+    supers = pd.read_excel("BD SUPERS.xlsx")
+    sup_cord = supers.sort_values("NOMBRE Y APELLIDO", ascending=True)
         # Creamos un objeto de Pandas ExcelWriter para guardar los 6 dataframes en un mismo archivo de Excel
     with pd.ExcelWriter('Nomina.xlsx') as writer:
         datos.to_excel(writer, sheet_name="BD Operarios", index=False)
+        sup_cord.to_excel(writer,sheet_name="Personal Operativo", index=False)
         datos2.to_excel(writer, sheet_name="De vacaciones", index=False)
         incidencias.to_excel(writer, sheet_name='Incidencias',index=False)
         incidencias_sup.to_excel(writer, sheet_name='Incidencias Supervisores',index=False)
