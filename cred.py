@@ -95,6 +95,7 @@ def enviar_email(inicio, final, archivo_adjunto):
 
             - Base de Datos Actualizada al dia de la recepcion de este correo
             - Base de datos de los Operararios actualmente de vacaciones
+            - Base de datos del Personal operativo de Capitales.   
             - Incidencias de lunes a viernes Operarios y Supervisores
             - Incidencias de Fines de semanas de Operarios y supervisores
             - Incidencias de Cuadrillas especiales de Operarios y supervisores en caso que haya alguna cuadrilla en la fecha corte
