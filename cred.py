@@ -103,7 +103,7 @@ def enviar_email(inicio, final, archivo_adjunto):
                 
 Este es un correo automatizado por Gustavo Boada 
 Data Analyst Senior.
-Tlf: +584141240654"""
+Tlf: 04141240654 / 04126050917"""
     em = EmailMessage()
 
     em["From"] = emisor
