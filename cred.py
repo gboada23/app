@@ -93,15 +93,17 @@ def enviar_email(inicio, final, archivo_adjunto):
     asunto = f"Incidencias Capitales del {inicio} al {final}"
     cuerpo = f"""{saludo} reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta el {final} donde podran visualizar:
 
-            - Base de Datos Actualizada al dia de la recepcion de este correo
-            - Base de datos de los Operararios actualmente de vacaciones
-            - Base de datos del Personal operativo de Capitales.   
-            - Incidencias de lunes a viernes Operarios y Supervisores
-            - Incidencias de Fines de semanas de Operarios y supervisores
-            - Incidencias de Cuadrillas especiales de Operarios y supervisores en caso que haya alguna cuadrilla en la fecha corte
+            - Base de Datos Actualizada al dia {final}
+            - Base de datos de los Operararios actualmente de vacaciones al dia {final}
+            - Base de datos del Personal operativo de Capitales al dia {final}.   
+            - Incidencias de lunes a viernes Operarios y Supervisores desde {inicio} hasta el {final}
+            - Incidencias de los fines de semanas de Operarios y supervisores que se encuentran en el rango de fechas solicitadas
+            - Incidencias de Cuadrillas especiales de Operarios y supervisores solo si hubo alguna en el rango de fechas
 
                 
-Este es un correo automatizado por Gustavo Boada del departamento de Datos."""
+Este es un correo automatizado por Gustavo Boada 
+Data Analyst Senior.
+Tlf: +584141240654"""
     em = EmailMessage()
 
     em["From"] = emisor
