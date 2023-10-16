@@ -96,7 +96,7 @@ def enviar_email(inicio, final, archivo_adjunto):
         <head></head>
         <body>
             <h3>{saludo}</h3>
-            <h4>reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta el {final} donde podran visualizar:</h4>
+            <h4>Reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta el {final} donde podran visualizar:</h4>
             <ul>
                 <li>Base de Datos Actualizada al dia {final} del personal Activo.</li>
                 <li>Base de datos de los Operararios actualmente de vacaciones al dia {final}.</li>
