@@ -91,25 +91,31 @@ def enviar_email(inicio, final, archivo_adjunto):
 
 
     asunto = f"Incidencias Capitales del {inicio} al {final}"
-    cuerpo = f"""{saludo} reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta el {final} donde podran visualizar:
-
-            - Base de Datos Actualizada al dia {final} del personal Activo
-            - Base de datos de los Operararios actualmente de vacaciones al dia {final}
-            - Base de datos del Personal operativo de Capitales al dia {final}.   
-            - Incidencias de lunes a viernes Operarios y Supervisores desde {inicio} hasta el {final}
-            - Incidencias de los fines de semanas de Operarios y supervisores que se encuentran en el rango de fechas solicitadas
-            - Incidencias de Cuadrillas especiales de Operarios y supervisores solo si hubo alguna en el rango de fechas
-
-                
-Este es un correo automatizado por Gustavo Boada 
-Data Analyst Senior.
-Tlf: 04141240654 / 04126050917"""
+    cuerpo_html = f"""
+    <html>
+        <head></head>
+        <body>
+            <h3>{saludo}</h3>
+            <h4>reciban un cordial saludo, en este archivo podran visualizar las incidencias de la Nomina de Capitales desde {inicio} hasta el {final} donde podran visualizar:</h4>
+            <ul>
+                <li>Base de Datos Actualizada al dia {final} del personal Activo.</li>
+                <li>Base de datos de los Operararios actualmente de vacaciones al dia {final}.</li>
+                <li>Base de datos del Personal operativo de Capitales al dia {final}.</li>
+                <li>Incidencias de lunes a viernes Operarios y Supervisores desde {inicio} hasta el {final}.</li>
+                <li>Incidencias de los fines de semanas de Operarios y supervisores que se encuentran en el rango de fechas solicitadas.</li>
+                <li>Incidencias de Cuadrillas especiales de Operarios y supervisores solo si hubo alguna en el rango de fechas.</li></ul>
+            <p style='color: blue;'><strong>Reporte enviado y automatizado por Gustavo Boada Coordinador de Datos.</strong></p>
+            <p>Data Analyst Senior.</p>
+            <p>Tlf: 04141240654 / 04126050917</p>
+        </body>
+    </html>
+    """
     em = EmailMessage()
 
     em["From"] = emisor
     em["To"] = ", ".join(receptores)
     em["Subject"] = asunto
-    em.set_content(cuerpo)
+    em.add_alternative(cuerpo_html, subtype='html')
 
     with open(archivo_adjunto, "rb") as f:
         archivo = f.read()
