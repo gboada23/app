@@ -87,7 +87,7 @@ def enviar_email(inicio, final, archivo_adjunto):
 
     emisor = "gustavoserviplus@gmail.com"
     clave = cred2.clave
-    receptores = ["gustavoserviplus@gmail.com","multiserviplus2022ca@gmail.com","serviplusrrhh@gmail.com","aliserviplus@gmail.com"]
+    receptores = ["multiserviplus2022ca@gmail.com","serviplusrrhh@gmail.com","servipluscapital@gmail.com"]
 
 
     asunto = f"Incidencias Capitales del {inicio} al {final}"
