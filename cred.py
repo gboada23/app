@@ -1,6 +1,6 @@
 import gspread
 import pandas as pd
-from oauth2client.service_account import Credentials
+from google.oauth2.service_account import Credentials
 import streamlit as st
 import numpy as np
 from email.message import EmailMessage
