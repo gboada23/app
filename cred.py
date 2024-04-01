@@ -1,6 +1,6 @@
 import gspread
 import pandas as pd
-from oauth2client.service_account import ServiceAccountCredentials
+from oauth2client.service_account import Credentials
 import streamlit as st
 import numpy as np
 from email.message import EmailMessage
@@ -9,15 +9,21 @@ import ssl
 import smtplib
 import cred2
 
-creds_path = r"Credenciales/cred.json"
+creds_path = st.secrets["google_sheets_credentials"]
 st.set_page_config(
     page_title="INCIDENCIAS | NOMINA ",
     page_icon="💵",
     layout="wide")
 # Definir las credenciales de la cuenta de servicio de Google Sheets
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name(creds_path, scope)
-gc = gspread.authorize(creds)
+
+creds_dict = eval(creds_path)  # Evalúa la cadena JSON para convertirla en un diccionario
+scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+# Asegurar que las credenciales incluyan el alcance necesario
+credentials = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+
+# Usar gspread para autenticar con Google Sheets
+gc = gspread.authorize(credentials)
+
 sheets = ['ASIS_SUP', 'FIN_SEMANA', 'FIN_SUPERVISORES', 'JORNADAS_ESPECIALES', 'ESPECIALES_SUPERVISORES']
 dfs = []
 
